@@ -16,7 +16,7 @@ import { AnalyticsFilters } from './components/AnalyticsFilters';
 import { useAnalyticsData } from './hooks/useAnalyticsData';
 import type { AnalyticsFilters as AnalyticsFiltersType } from './types/analyticsTypes';
 
-export type AnalyticsTab = 'price_trend' | 'basis_trend';
+export type AnalyticsTab = 'basis_trend' | 'price_trend';
 
 interface AnalyticsTabConfig {
   id: AnalyticsTab;
