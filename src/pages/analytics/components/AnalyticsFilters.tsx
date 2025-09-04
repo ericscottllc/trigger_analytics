@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useMemo } from 'react';
 import { motion } from 'framer-motion';
-import { Calendar, MapPin, Building, Search } from 'lucide-react';
+import { Calendar, MapPin, Building, Search, ChevronDown, ChevronUp } from 'lucide-react';
 import { Input, Button } from '../../../components/Shared/SharedComponents';
 import type { AnalyticsFilters as AnalyticsFiltersType, GrainEntry } from '../types/analyticsTypes';
 
@@ -23,6 +23,7 @@ export const AnalyticsFilters: React.FC<AnalyticsFiltersProps> = ({
 }) => {
   const [elevatorSearch, setElevatorSearch] = useState('');
   const [townSearch, setTownSearch] = useState('');
+  const [isExpanded, setIsExpanded] = useState(false);
 
   // Extract unique options from master data
   const filterOptions = useMemo(() => {
@@ -104,101 +105,200 @@ export const AnalyticsFilters: React.FC<AnalyticsFiltersProps> = ({
   };
 
   return (
-    <div className="bg-gray-50 p-3 rounded-lg border border-gray-200">
-      <div className="flex flex-wrap items-center gap-4">
-        {/* Crop Class Buttons */}
+    <div className="bg-gray-50 rounded-lg border border-gray-200">
+      {/* Filter Header - Always Visible */}
+      <div 
+        className="flex items-center justify-between p-3 cursor-pointer hover:bg-gray-100 transition-colors"
+        onClick={() => setIsExpanded(!isExpanded)}
+      >
         <div className="flex items-center gap-2">
-          <span className="text-xs font-medium text-gray-600">Class:</span>
-          <div className="flex gap-1">
-            {filterOptions.cropClasses.map((cropClass) => (
-              <button
-                key={cropClass.code}
-                onClick={() => handleFilterChange('crop_class_code', cropClass.code)}
-                className={`px-2 py-1 text-xs font-medium rounded transition-all duration-200 ${
-                  filters.crop_class_code === cropClass.code
-                    ? 'bg-tg-primary text-white'
-                    : 'bg-white text-gray-700 hover:bg-gray-100 border border-gray-300'
-                }`}
-              >
-                {cropClass.code}
-              </button>
-            ))}
-          </div>
+          <span className="text-sm font-medium text-gray-700">Filters</span>
+          {filters.crop_class_code && (
+            <span className="px-2 py-1 bg-tg-primary text-white text-xs rounded">
+              {filters.crop_class_code}
+            </span>
+          )}
+          {filters.region_id && (
+            <span className="px-2 py-1 bg-tg-green text-white text-xs rounded">
+              {filterOptions.regions.find(r => r.id === filters.region_id)?.name}
+            </span>
+          )}
         </div>
+        {isExpanded ? (
+          <ChevronUp className="w-4 h-4 text-gray-500" />
+        ) : (
+          <ChevronDown className="w-4 h-4 text-gray-500" />
+        )}
+      </div>
 
-        {/* Region Buttons */}
-        <div className="flex items-center gap-2">
-          <span className="text-xs font-medium text-gray-600">Region:</span>
-          <div className="flex gap-1">
-            <button
-              onClick={() => handleFilterChange('region_id', '')}
-              className={`px-2 py-1 text-xs font-medium rounded transition-all duration-200 ${
-                !filters.region_id
-                  ? 'bg-tg-green text-white'
-                  : 'bg-white text-gray-700 hover:bg-gray-100 border border-gray-300'
-              }`}
-            >
-              All
-            </button>
-            {filterOptions.regions.map((region) => (
+      {/* Expandable Filter Content */}
+      <motion.div
+        initial={false}
+        animate={{ height: isExpanded ? 'auto' : 0, opacity: isExpanded ? 1 : 0 }}
+        transition={{ duration: 0.2 }}
+        className="overflow-hidden"
+      >
+        <div className="p-3 pt-0 space-y-3">
+          {/* Crop Class Buttons */}
+          <div className="flex items-center gap-2">
+            <span className="text-xs font-medium text-gray-600 min-w-[40px]">Class:</span>
+            <div className="flex gap-1">
+              {filterOptions.cropClasses.map((cropClass) => (
+                <button
+                  key={cropClass.code}
+                  onClick={() => handleFilterChange('crop_class_code', cropClass.code)}
+                  className={`px-2 py-1 text-xs font-medium rounded transition-all duration-200 ${
+                    filters.crop_class_code === cropClass.code
+                      ? 'bg-tg-primary text-white'
+                      : 'bg-white text-gray-700 hover:bg-gray-100 border border-gray-300'
+                  }`}
+                >
+                  {cropClass.code}
+                </button>
+              ))}
+            </div>
+          </div>
+
+          {/* Region Buttons */}
+          <div className="flex items-center gap-2">
+            <span className="text-xs font-medium text-gray-600 min-w-[40px]">Region:</span>
+            <div className="flex gap-1 flex-wrap">
               <button
-                key={region.id}
-                onClick={() => handleFilterChange('region_id', region.id)}
+                onClick={() => handleFilterChange('region_id', '')}
                 className={`px-2 py-1 text-xs font-medium rounded transition-all duration-200 ${
-                  filters.region_id === region.id
+                  !filters.region_id
                     ? 'bg-tg-green text-white'
                     : 'bg-white text-gray-700 hover:bg-gray-100 border border-gray-300'
                 }`}
               >
-                {region.name}
+                All
               </button>
-            ))}
+              {filterOptions.regions.map((region) => (
+                <button
+                  key={region.id}
+                  onClick={() => handleFilterChange('region_id', region.id)}
+                  className={`px-2 py-1 text-xs font-medium rounded transition-all duration-200 ${
+                    filters.region_id === region.id
+                      ? 'bg-tg-green text-white'
+                      : 'bg-white text-gray-700 hover:bg-gray-100 border border-gray-300'
+                  }`}
+                >
+                  {region.name}
+                </button>
+              ))}
+            </div>
+          </div>
+
+          {/* Date Range and Search Filters */}
+          <div className="flex flex-wrap items-center gap-4">
+            {/* Date Range */}
+            <div className="flex items-center gap-2">
+              <span className="text-xs font-medium text-gray-600">From:</span>
+              <input
+                type="date"
+                value={filters.date_from || ''}
+                onChange={(e) => handleFilterChange('date_from', e.target.value)}
+                className="px-2 py-1 text-xs border border-gray-300 rounded focus:outline-none focus:ring-1 focus:ring-tg-primary"
+              />
+            </div>
+
+            <div className="flex items-center gap-2">
+              <span className="text-xs font-medium text-gray-600">To:</span>
+              <input
+                type="date"
+                value={filters.date_to || ''}
+                onChange={(e) => handleFilterChange('date_to', e.target.value)}
+                className="px-2 py-1 text-xs border border-gray-300 rounded focus:outline-none focus:ring-1 focus:ring-tg-primary"
+              />
+            </div>
+
+            {/* Searchable Elevator */}
+            <div className="flex items-center gap-2 relative">
+              <span className="text-xs font-medium text-gray-600">Elevator:</span>
+              <input
+                type="text"
+                placeholder="Search..."
+                value={elevatorSearch}
+                onChange={(e) => setElevatorSearch(e.target.value)}
+                className="px-2 py-1 text-xs border border-gray-300 rounded focus:outline-none focus:ring-1 focus:ring-tg-primary w-32"
+              />
+              {elevatorSearch && (
+                <div className="absolute top-full left-16 z-10 w-48 mt-1 bg-white border border-gray-200 rounded shadow-lg max-h-32 overflow-y-auto">
+                  <button
+                    onClick={() => {
+                      handleFilterChange('elevator_id', '');
+                      setElevatorSearch('');
+                    }}
+                    className="w-full px-2 py-1 text-left text-xs hover:bg-gray-50 border-b border-gray-100"
+                  >
+                    All Elevators
+                  </button>
+                  {filteredElevators.map((elevator) => (
+                    <button
+                      key={elevator.id}
+                      onClick={() => {
+                        handleFilterChange('elevator_id', elevator.id);
+                        setElevatorSearch(elevator.name);
+                      }}
+                      className="w-full px-2 py-1 text-left text-xs hover:bg-gray-50"
+                    >
+                      {elevator.name}
+                    </button>
+                  ))}
+                </div>
+              )}
+            </div>
+
+            {/* Searchable Town */}
+            <div className="flex items-center gap-2 relative">
+              <span className="text-xs font-medium text-gray-600">Town:</span>
+              <input
+                type="text"
+                placeholder="Search..."
+                value={townSearch}
+                onChange={(e) => setTownSearch(e.target.value)}
+                className="px-2 py-1 text-xs border border-gray-300 rounded focus:outline-none focus:ring-1 focus:ring-tg-primary w-32"
+              />
+              {townSearch && (
+                <div className="absolute top-full left-12 z-10 w-48 mt-1 bg-white border border-gray-200 rounded shadow-lg max-h-32 overflow-y-auto">
+                  <button
+                    onClick={() => {
+                      handleFilterChange('town_id', '');
+                      setTownSearch('');
+                    }}
+                    className="w-full px-2 py-1 text-left text-xs hover:bg-gray-50 border-b border-gray-100"
+                  >
+                    All Towns
+                  </button>
+                  {filteredTowns.map((town) => (
+                    <button
+                      key={town.id}
+                      onClick={() => {
+                        handleFilterChange('town_id', town.id);
+                        setTownSearch(town.name);
+                      }}
+                      className="w-full px-2 py-1 text-left text-xs hover:bg-gray-50"
+                    >
+                      {town.name}
+                    </button>
+                  ))}
+                </div>
+              )}
+            </div>
+
+            {/* Clear Filters */}
+            <button
+              onClick={clearFilters}
+              className="px-2 py-1 text-xs text-gray-600 hover:text-gray-800 underline"
+            >
+              Clear
+            </button>
           </div>
         </div>
-
-        {/* Date Range */}
-        <div className="flex items-center gap-2">
-          <span className="text-xs font-medium text-gray-600">From:</span>
-          <input
-            type="date"
-            value={filters.date_from || ''}
-            onChange={(e) => handleFilterChange('date_from', e.target.value)}
-            className="px-2 py-1 text-xs border border-gray-300 rounded focus:outline-none focus:ring-1 focus:ring-tg-primary"
-          />
-        </div>
-
-        <div className="flex items-center gap-2">
-          <span className="text-xs font-medium text-gray-600">To:</span>
-          <input
-            type="date"
-            value={filters.date_to || ''}
-            onChange={(e) => handleFilterChange('date_to', e.target.value)}
-            className="px-2 py-1 text-xs border border-gray-300 rounded focus:outline-none focus:ring-1 focus:ring-tg-primary"
-          />
-        </div>
-
-        {/* Searchable Elevator */}
-        <div className="flex items-center gap-2 relative">
-          <span className="text-xs font-medium text-gray-600">Elevator:</span>
-          <input
-            type="text"
-            placeholder="Search..."
-            value={elevatorSearch}
-            onChange={(e) => setElevatorSearch(e.target.value)}
-            className="px-2 py-1 text-xs border border-gray-300 rounded focus:outline-none focus:ring-1 focus:ring-tg-primary w-32"
-          />
-          {elevatorSearch && (
-            <div className="absolute top-full left-16 z-10 w-48 mt-1 bg-white border border-gray-200 rounded shadow-lg max-h-32 overflow-y-auto">
-              <button
-                onClick={() => {
-                  handleFilterChange('elevator_id', '');
-                  setElevatorSearch('');
-                }}
-                className="w-full px-2 py-1 text-left text-xs hover:bg-gray-50 border-b border-gray-100"
-              >
-                All Elevators
-              </button>
-              {filteredElevators.map((elevator) => (
+      </motion.div>
+    </div>
+  );
+};
                 <button
                   key={elevator.id}
                   onClick={() => {

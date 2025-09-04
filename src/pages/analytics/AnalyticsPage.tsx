@@ -138,40 +138,46 @@ export const AnalyticsPage: React.FC = () => {
 
           {/* Data Status */}
           {/* Tab Navigation */}
-          <div className="flex space-x-1 bg-gray-100 p-1 rounded-lg overflow-x-auto">
-            {analyticsTabs.map((tab, index) => {
-              const Icon = tab.icon;
-              const isActive = activeTab === tab.id;
-              
-              return (
-                <motion.button
-                  key={tab.id}
-                  onClick={() => setActiveTab(tab.id)}
-                  className={`flex items-center gap-2 px-4 py-2 rounded-md font-medium text-sm transition-all duration-200 whitespace-nowrap ${
-                    isActive
-                      ? 'bg-white text-tg-primary shadow-sm'
-                      : 'text-gray-600 hover:text-gray-800 hover:bg-gray-50'
-                  }`}
-                  initial={{ opacity: 0, y: -10 }}
-                  animate={{ opacity: 1, y: 0 }}
-                  transition={{ duration: 0.3, delay: index * 0.05 }}
-                  whileHover={{ scale: 1.02 }}
-                  whileTap={{ scale: 0.98 }}
-                >
-                  <Icon className="w-4 h-4" />
-                  <span>{tab.title}</span>
-                </motion.button>
-              );
-            })}
-          </div>
+          {/* Two Column Layout: Tabs and Filters */}
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
+            {/* Left Column: Tab Navigation */}
+            <div>
+              <div className="flex space-x-1 bg-gray-100 p-1 rounded-lg overflow-x-auto">
+                {analyticsTabs.map((tab, index) => {
+                  const Icon = tab.icon;
+                  const isActive = activeTab === tab.id;
+                  
+                  return (
+                    <motion.button
+                      key={tab.id}
+                      onClick={() => setActiveTab(tab.id)}
+                      className={`flex items-center gap-2 px-4 py-2 rounded-md font-medium text-sm transition-all duration-200 whitespace-nowrap ${
+                        isActive
+                          ? 'bg-white text-tg-primary shadow-sm'
+                          : 'text-gray-600 hover:text-gray-800 hover:bg-gray-50'
+                      }`}
+                      initial={{ opacity: 0, y: -10 }}
+                      animate={{ opacity: 1, y: 0 }}
+                      transition={{ duration: 0.3, delay: index * 0.05 }}
+                      whileHover={{ scale: 1.02 }}
+                      whileTap={{ scale: 0.98 }}
+                    >
+                      <Icon className="w-4 h-4" />
+                      <span>{tab.title}</span>
+                    </motion.button>
+                  );
+                })}
+              </div>
+            </div>
 
-          {/* Compact Filters */}
-          <div className="mt-4">
-            <AnalyticsFilters
-              filters={filters}
-              onChange={handleFiltersChange}
-              masterData={masterData}
-            />
+            {/* Right Column: Filters */}
+            <div>
+              <AnalyticsFilters
+                filters={filters}
+                onChange={handleFiltersChange}
+                masterData={masterData}
+              />
+            </div>
           </div>
         </div>
       </div>

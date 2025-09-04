@@ -83,22 +83,22 @@ export const BasisTrendReport: React.FC<BasisTrendReportProps> = ({
     <div className="max-w-7xl mx-auto p-6 space-y-6">
       {/* Statistics Cards */}
       {statistics && (
-        <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
+        <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
           <motion.div
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: 0.1 }}
           >
-            <Card className="p-4">
+            <Card className="p-3">
               <div className="flex items-center justify-between">
                 <div>
-                  <p className="text-sm text-gray-600">Average Basis</p>
-                  <p className="text-2xl font-bold text-gray-800">
+                  <p className="text-xs text-gray-600">Average Basis</p>
+                  <p className="text-lg font-bold text-gray-800">
                     ${statistics.average}
                   </p>
                 </div>
-                <div className="w-10 h-10 bg-tg-primary/10 rounded-lg flex items-center justify-center">
-                  <LineChart className="w-5 h-5 text-tg-primary" />
+                <div className="w-8 h-8 bg-tg-primary/10 rounded-lg flex items-center justify-center">
+                  <LineChart className="w-4 h-4 text-tg-primary" />
                 </div>
               </div>
             </Card>
@@ -109,16 +109,16 @@ export const BasisTrendReport: React.FC<BasisTrendReportProps> = ({
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: 0.2 }}
           >
-            <Card className="p-4">
+            <Card className="p-3">
               <div className="flex items-center justify-between">
                 <div>
-                  <p className="text-sm text-gray-600">Minimum Basis</p>
-                  <p className="text-2xl font-bold text-gray-800">
+                  <p className="text-xs text-gray-600">Minimum Basis</p>
+                  <p className="text-lg font-bold text-gray-800">
                     ${statistics.minimum}
                   </p>
                 </div>
-                <div className="w-10 h-10 bg-red-100 rounded-lg flex items-center justify-center">
-                  <TrendingDown className="w-5 h-5 text-red-600" />
+                <div className="w-8 h-8 bg-red-100 rounded-lg flex items-center justify-center">
+                  <TrendingDown className="w-4 h-4 text-red-600" />
                 </div>
               </div>
             </Card>
@@ -129,16 +129,16 @@ export const BasisTrendReport: React.FC<BasisTrendReportProps> = ({
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: 0.3 }}
           >
-            <Card className="p-4">
+            <Card className="p-3">
               <div className="flex items-center justify-between">
                 <div>
-                  <p className="text-sm text-gray-600">Maximum Basis</p>
-                  <p className="text-2xl font-bold text-gray-800">
+                  <p className="text-xs text-gray-600">Maximum Basis</p>
+                  <p className="text-lg font-bold text-gray-800">
                     ${statistics.maximum}
                   </p>
                 </div>
-                <div className="w-10 h-10 bg-green-100 rounded-lg flex items-center justify-center">
-                  <TrendingUp className="w-5 h-5 text-green-600" />
+                <div className="w-8 h-8 bg-green-100 rounded-lg flex items-center justify-center">
+                  <TrendingUp className="w-4 h-4 text-green-600" />
                 </div>
               </div>
             </Card>
@@ -149,24 +149,24 @@ export const BasisTrendReport: React.FC<BasisTrendReportProps> = ({
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: 0.4 }}
           >
-            <Card className="p-4">
+            <Card className="p-3">
               <div className="flex items-center justify-between">
                 <div>
-                  <p className="text-sm text-gray-600">Trend</p>
-                  <p className="text-2xl font-bold text-gray-800 capitalize">
+                  <p className="text-xs text-gray-600">Trend</p>
+                  <p className="text-lg font-bold text-gray-800 capitalize">
                     {statistics.trend}
                   </p>
                 </div>
-                <div className={`w-10 h-10 rounded-lg flex items-center justify-center ${
+                <div className={`w-8 h-8 rounded-lg flex items-center justify-center ${
                   statistics.trend === 'up' ? 'bg-green-100' :
                   statistics.trend === 'down' ? 'bg-red-100' : 'bg-gray-100'
                 }`}>
                   {statistics.trend === 'up' ? (
-                    <TrendingUp className="w-5 h-5 text-green-600" />
+                    <TrendingUp className="w-4 h-4 text-green-600" />
                   ) : statistics.trend === 'down' ? (
-                    <TrendingDown className="w-5 h-5 text-red-600" />
+                    <TrendingDown className="w-4 h-4 text-red-600" />
                   ) : (
-                    <Minus className="w-5 h-5 text-gray-600" />
+                    <Minus className="w-4 h-4 text-gray-600" />
                   )}
                 </div>
               </div>
