@@ -104,229 +104,161 @@ export const AnalyticsFilters: React.FC<AnalyticsFiltersProps> = ({
   };
 
   return (
-    <motion.div
-      initial={{ opacity: 0, y: -10 }}
-      animate={{ opacity: 1, y: 0 }}
-      className="space-y-4"
-    >
-      {/* Crop Class Buttons */}
-      <div className="space-y-2">
-        <label className="block text-sm font-medium text-gray-700">Crop Class</label>
-        <div className="flex flex-wrap gap-2">
-          {filterOptions.cropClasses.map((cropClass) => (
+    <div className="bg-gray-50 p-3 rounded-lg border border-gray-200">
+      <div className="flex flex-wrap items-center gap-4">
+        {/* Crop Class Buttons */}
+        <div className="flex items-center gap-2">
+          <span className="text-xs font-medium text-gray-600">Class:</span>
+          <div className="flex gap-1">
+            {filterOptions.cropClasses.map((cropClass) => (
+              <button
+                key={cropClass.code}
+                onClick={() => handleFilterChange('crop_class_code', cropClass.code)}
+                className={`px-2 py-1 text-xs font-medium rounded transition-all duration-200 ${
+                  filters.crop_class_code === cropClass.code
+                    ? 'bg-tg-primary text-white'
+                    : 'bg-white text-gray-700 hover:bg-gray-100 border border-gray-300'
+                }`}
+              >
+                {cropClass.code}
+              </button>
+            ))}
+          </div>
+        </div>
+
+        {/* Region Buttons */}
+        <div className="flex items-center gap-2">
+          <span className="text-xs font-medium text-gray-600">Region:</span>
+          <div className="flex gap-1">
             <button
-              key={cropClass.code}
-              onClick={() => handleFilterChange('crop_class_code', cropClass.code)}
-              className={`px-3 py-1.5 text-sm font-medium rounded-lg transition-all duration-200 ${
-                filters.crop_class_code === cropClass.code
-                  ? 'bg-tg-primary text-white shadow-md'
-                  : 'bg-gray-100 text-gray-700 hover:bg-gray-200'
+              onClick={() => handleFilterChange('region_id', '')}
+              className={`px-2 py-1 text-xs font-medium rounded transition-all duration-200 ${
+                !filters.region_id
+                  ? 'bg-tg-green text-white'
+                  : 'bg-white text-gray-700 hover:bg-gray-100 border border-gray-300'
               }`}
             >
-              {cropClass.code}
+              All
             </button>
-          ))}
+            {filterOptions.regions.map((region) => (
+              <button
+                key={region.id}
+                onClick={() => handleFilterChange('region_id', region.id)}
+                className={`px-2 py-1 text-xs font-medium rounded transition-all duration-200 ${
+                  filters.region_id === region.id
+                    ? 'bg-tg-green text-white'
+                    : 'bg-white text-gray-700 hover:bg-gray-100 border border-gray-300'
+                }`}
+              >
+                {region.name}
+              </button>
+            ))}
+          </div>
         </div>
-      </div>
 
-      {/* Region Buttons */}
-      <div className="space-y-2">
-        <label className="block text-sm font-medium text-gray-700">Region</label>
-        <div className="flex flex-wrap gap-2">
-          <button
-            onClick={() => handleFilterChange('region_id', '')}
-            className={`px-3 py-1.5 text-sm font-medium rounded-lg transition-all duration-200 ${
-              !filters.region_id
-                ? 'bg-tg-green text-white shadow-md'
-                : 'bg-gray-100 text-gray-700 hover:bg-gray-200'
-            }`}
-          >
-            All Regions
-          </button>
-          {filterOptions.regions.map((region) => (
-            <button
-              key={region.id}
-              onClick={() => handleFilterChange('region_id', region.id)}
-              className={`px-3 py-1.5 text-sm font-medium rounded-lg transition-all duration-200 ${
-                filters.region_id === region.id
-                  ? 'bg-tg-green text-white shadow-md'
-                  : 'bg-gray-100 text-gray-700 hover:bg-gray-200'
-              }`}
-            >
-              {region.name}
-            </button>
-          ))}
-        </div>
-      </div>
-
-      {/* Dropdown Filters */}
-      <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
         {/* Date Range */}
-        <div className="space-y-2">
-          <label className="block text-sm font-medium text-gray-700">
-            <Calendar className="w-4 h-4 inline mr-1" />
-            Date From
-          </label>
-          <Input
+        <div className="flex items-center gap-2">
+          <span className="text-xs font-medium text-gray-600">From:</span>
+          <input
             type="date"
             value={filters.date_from || ''}
             onChange={(e) => handleFilterChange('date_from', e.target.value)}
-            size="sm"
+            className="px-2 py-1 text-xs border border-gray-300 rounded focus:outline-none focus:ring-1 focus:ring-tg-primary"
           />
         </div>
 
-        <div className="space-y-2">
-          <label className="block text-sm font-medium text-gray-700">
-            <Calendar className="w-4 h-4 inline mr-1" />
-            Date To
-          </label>
-          <Input
+        <div className="flex items-center gap-2">
+          <span className="text-xs font-medium text-gray-600">To:</span>
+          <input
             type="date"
             value={filters.date_to || ''}
             onChange={(e) => handleFilterChange('date_to', e.target.value)}
-            size="sm"
+            className="px-2 py-1 text-xs border border-gray-300 rounded focus:outline-none focus:ring-1 focus:ring-tg-primary"
           />
         </div>
 
-        {/* Searchable Elevator Dropdown */}
-        <div className="space-y-2">
-          <label className="block text-sm font-medium text-gray-700">
-            <Building className="w-4 h-4 inline mr-1" />
-            Elevator
-          </label>
-          <div className="relative">
-            <Input
-              type="text"
-              placeholder="Search elevators..."
-              value={elevatorSearch}
-              onChange={(e) => setElevatorSearch(e.target.value)}
-              size="sm"
-              icon={Search}
-            />
-            {elevatorSearch && (
-              <div className="absolute z-10 w-full mt-1 bg-white border border-gray-200 rounded-lg shadow-lg max-h-48 overflow-y-auto">
+        {/* Searchable Elevator */}
+        <div className="flex items-center gap-2 relative">
+          <span className="text-xs font-medium text-gray-600">Elevator:</span>
+          <input
+            type="text"
+            placeholder="Search..."
+            value={elevatorSearch}
+            onChange={(e) => setElevatorSearch(e.target.value)}
+            className="px-2 py-1 text-xs border border-gray-300 rounded focus:outline-none focus:ring-1 focus:ring-tg-primary w-32"
+          />
+          {elevatorSearch && (
+            <div className="absolute top-full left-16 z-10 w-48 mt-1 bg-white border border-gray-200 rounded shadow-lg max-h-32 overflow-y-auto">
+              <button
+                onClick={() => {
+                  handleFilterChange('elevator_id', '');
+                  setElevatorSearch('');
+                }}
+                className="w-full px-2 py-1 text-left text-xs hover:bg-gray-50 border-b border-gray-100"
+              >
+                All Elevators
+              </button>
+              {filteredElevators.map((elevator) => (
                 <button
+                  key={elevator.id}
                   onClick={() => {
-                    handleFilterChange('elevator_id', '');
-                    setElevatorSearch('');
+                    handleFilterChange('elevator_id', elevator.id);
+                    setElevatorSearch(elevator.name);
                   }}
-                  className="w-full px-3 py-2 text-left text-sm hover:bg-gray-50 border-b border-gray-100"
+                  className="w-full px-2 py-1 text-left text-xs hover:bg-gray-50"
                 >
-                  All Elevators
+                  {elevator.name}
                 </button>
-                {filteredElevators.map((elevator) => (
-                  <button
-                    key={elevator.id}
-                    onClick={() => {
-                      handleFilterChange('elevator_id', elevator.id);
-                      setElevatorSearch(elevator.name);
-                    }}
-                    className="w-full px-3 py-2 text-left text-sm hover:bg-gray-50"
-                  >
-                    {elevator.name}
-                  </button>
-                ))}
-              </div>
-            )}
-          </div>
+              ))}
+            </div>
+          )}
         </div>
 
-        {/* Searchable Town Dropdown */}
-        <div className="space-y-2">
-          <label className="block text-sm font-medium text-gray-700">
-            <MapPin className="w-4 h-4 inline mr-1" />
-            Town
-          </label>
-          <div className="relative">
-            <Input
-              type="text"
-              placeholder="Search towns..."
-              value={townSearch}
-              onChange={(e) => setTownSearch(e.target.value)}
-              size="sm"
-              icon={Search}
-            />
-            {townSearch && (
-              <div className="absolute z-10 w-full mt-1 bg-white border border-gray-200 rounded-lg shadow-lg max-h-48 overflow-y-auto">
+        {/* Searchable Town */}
+        <div className="flex items-center gap-2 relative">
+          <span className="text-xs font-medium text-gray-600">Town:</span>
+          <input
+            type="text"
+            placeholder="Search..."
+            value={townSearch}
+            onChange={(e) => setTownSearch(e.target.value)}
+            className="px-2 py-1 text-xs border border-gray-300 rounded focus:outline-none focus:ring-1 focus:ring-tg-primary w-32"
+          />
+          {townSearch && (
+            <div className="absolute top-full left-12 z-10 w-48 mt-1 bg-white border border-gray-200 rounded shadow-lg max-h-32 overflow-y-auto">
+              <button
+                onClick={() => {
+                  handleFilterChange('town_id', '');
+                  setTownSearch('');
+                }}
+                className="w-full px-2 py-1 text-left text-xs hover:bg-gray-50 border-b border-gray-100"
+              >
+                All Towns
+              </button>
+              {filteredTowns.map((town) => (
                 <button
+                  key={town.id}
                   onClick={() => {
-                    handleFilterChange('town_id', '');
-                    setTownSearch('');
+                    handleFilterChange('town_id', town.id);
+                    setTownSearch(town.name);
                   }}
-                  className="w-full px-3 py-2 text-left text-sm hover:bg-gray-50 border-b border-gray-100"
+                  className="w-full px-2 py-1 text-left text-xs hover:bg-gray-50"
                 >
-                  All Towns
+                  {town.name}
                 </button>
-                {filteredTowns.map((town) => (
-                  <button
-                    key={town.id}
-                    onClick={() => {
-                      handleFilterChange('town_id', town.id);
-                      setTownSearch(town.name);
-                    }}
-                    className="w-full px-3 py-2 text-left text-sm hover:bg-gray-50"
-                  >
-                    {town.name}
-                  </button>
-                ))}
-              </div>
-            )}
-          </div>
+              ))}
+            </div>
+          )}
         </div>
-      </div>
 
-      {/* Clear Filters */}
-      <div className="flex justify-end">
-        <Button
-          variant="ghost"
-          size="sm"
+        {/* Clear Filters */}
+        <button
           onClick={clearFilters}
+          className="px-2 py-1 text-xs text-gray-600 hover:text-gray-800 underline"
         >
-          Clear Filters
-        </Button>
+          Clear
+        </button>
       </div>
-
-      {/* Active Filters Summary */}
-      {(Object.keys(filters).length > 1 || filters.crop_class_code !== 'CWRS') && (
-        <div className="p-3 bg-gray-50 rounded-lg">
-          <p className="text-sm text-gray-600 mb-2">Active Filters:</p>
-          <div className="flex flex-wrap gap-2">
-            {Object.entries(filters).map(([key, value]) => {
-              if (!value) return null;
-              
-              let displayValue = value;
-              let displayKey = key.replace('_', ' ').replace('id', '');
-              
-              // Get display names for IDs
-              if (key === 'crop_class_code') {
-                displayKey = 'Crop Class';
-                displayValue = value;
-              } else if (key === 'region_id') {
-                const region = filterOptions.regions.find(r => r.id === value);
-                displayValue = region?.name || value;
-                displayKey = 'Region';
-              } else if (key === 'elevator_id') {
-                const elevator = filterOptions.elevators.find(e => e.id === value);
-                displayValue = elevator?.name || value;
-                displayKey = 'Elevator';
-              } else if (key === 'town_id') {
-                const town = filterOptions.towns.find(t => t.id === value);
-                displayValue = town?.name || value;
-                displayKey = 'Town';
-              }
-              
-              return (
-                <span
-                  key={key}
-                  className="inline-flex items-center px-2 py-1 bg-tg-primary/10 text-tg-primary text-xs rounded-md"
-                >
-                  {displayKey}: {displayValue}
-                </span>
-              );
-            })}
-          </div>
-        </div>
-      )}
-    </motion.div>
+    </div>
   );
 };
