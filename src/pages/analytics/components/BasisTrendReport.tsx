@@ -79,6 +79,40 @@ export const BasisTrendReport: React.FC<BasisTrendReportProps> = ({
     };
   }, [chartData]);
 
+  // Calculate elevator-specific statistics
+  const elevatorStats = useMemo(() => {
+    if (!data.length) return [];
+
+    // Group data by elevator
+    const elevatorData = data.reduce((acc, entry) => {
+      if (entry.basis !== null && entry.basis !== undefined) {
+        if (!acc[entry.elevator_name]) {
+          acc[entry.elevator_name] = [];
+        }
+        acc[entry.elevator_name].push(entry.basis);
+      }
+      return acc;
+    }, {} as Record<string, number[]>);
+
+    // Calculate stats for each elevator
+    return Object.entries(elevatorData)
+      .map(([elevatorName, basisValues]) => {
+        const avg = basisValues.reduce((sum, val) => sum + val, 0) / basisValues.length;
+        const min = Math.min(...basisValues);
+        const max = Math.max(...basisValues);
+        
+        return {
+          name: elevatorName,
+          average: Number(avg.toFixed(2)),
+          minimum: Number(min.toFixed(2)),
+          maximum: Number(max.toFixed(2)),
+          count: basisValues.length
+        };
+      })
+      .sort((a, b) => b.average - a.average) // Sort by average descending
+      .slice(0, 3); // Show top 3 elevators
+  }, [data]);
+
   return (
     <div className="max-w-7xl mx-auto p-6 space-y-6">
       {/* Statistics Cards */}
@@ -101,6 +135,21 @@ export const BasisTrendReport: React.FC<BasisTrendReportProps> = ({
                   <LineChart className="w-4 h-4 text-tg-primary" />
                 </div>
               </div>
+              {elevatorStats.length > 0 && (
+                <div className="space-y-1">
+                  <p className="text-xs text-gray-500 font-medium">By Elevator:</p>
+                  {elevatorStats.map((elevator, index) => (
+                    <div key={elevator.name} className="flex justify-between text-xs">
+                      <span className="text-gray-600 truncate max-w-[100px]" title={elevator.name}>
+                        {elevator.name}
+                      </span>
+                      <span className="text-gray-800 font-medium">
+                        ${elevator.average}
+                      </span>
+                    </div>
+                  ))}
+                </div>
+              )}
             </Card>
           </motion.div>
 
@@ -121,6 +170,21 @@ export const BasisTrendReport: React.FC<BasisTrendReportProps> = ({
                   <TrendingDown className="w-4 h-4 text-red-600" />
                 </div>
               </div>
+              {elevatorStats.length > 0 && (
+                <div className="space-y-1">
+                  <p className="text-xs text-gray-500 font-medium">By Elevator:</p>
+                  {elevatorStats.map((elevator, index) => (
+                    <div key={elevator.name} className="flex justify-between text-xs">
+                      <span className="text-gray-600 truncate max-w-[100px]" title={elevator.name}>
+                        {elevator.name}
+                      </span>
+                      <span className="text-gray-800 font-medium">
+                        ${elevator.minimum}
+                      </span>
+                    </div>
+                  ))}
+                </div>
+              )}
             </Card>
           </motion.div>
 
@@ -141,6 +205,21 @@ export const BasisTrendReport: React.FC<BasisTrendReportProps> = ({
                   <TrendingUp className="w-4 h-4 text-green-600" />
                 </div>
               </div>
+              {elevatorStats.length > 0 && (
+                <div className="space-y-1">
+                  <p className="text-xs text-gray-500 font-medium">By Elevator:</p>
+                  {elevatorStats.map((elevator, index) => (
+                    <div key={elevator.name} className="flex justify-between text-xs">
+                      <span className="text-gray-600 truncate max-w-[100px]" title={elevator.name}>
+                        {elevator.name}
+                      </span>
+                      <span className="text-gray-800 font-medium">
+                        ${elevator.maximum}
+                      </span>
+                    </div>
+                  ))}
+                </div>
+              )}
             </Card>
           </motion.div>
 
@@ -170,6 +249,21 @@ export const BasisTrendReport: React.FC<BasisTrendReportProps> = ({
                   )}
                 </div>
               </div>
+              {elevatorStats.length > 0 && (
+                <div className="space-y-1">
+                  <p className="text-xs text-gray-500 font-medium">Top Elevators:</p>
+                  {elevatorStats.map((elevator, index) => (
+                    <div key={elevator.name} className="flex justify-between text-xs">
+                      <span className="text-gray-600 truncate max-w-[100px]" title={elevator.name}>
+                        {elevator.name}
+                      </span>
+                      <span className="text-gray-800 font-medium">
+                        {elevator.count} entries
+                      </span>
+                    </div>
+                  ))}
+                </div>
+              )}
             </Card>
           </motion.div>
         </div>
