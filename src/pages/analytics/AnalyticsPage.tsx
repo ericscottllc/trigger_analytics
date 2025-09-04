@@ -54,7 +54,8 @@ export const AnalyticsPage: React.FC = () => {
     loading, 
     error, 
     lastFetched,
-    fetchMasterData 
+    fetchMasterData,
+    totalRecords
   } = useAnalyticsData();
 
   const activeTabConfig = analyticsTabs.find(tab => tab.id === activeTab);
@@ -220,21 +221,12 @@ export const AnalyticsPage: React.FC = () => {
             <ActiveComponent 
               data={filteredData}
               filters={filters}
+              lastFetched={lastFetched}
+              totalRecords={totalRecords}
             />
           </motion.div>
         )}
 
-        {/* Data Status Footer */}
-        {lastFetched && (
-          <div className="bg-white border-t border-gray-200 px-6 py-2 mt-auto">
-            <div className="max-w-7xl mx-auto flex items-center gap-2 text-xs text-gray-500">
-              <CheckCircle className="w-3 h-3 text-green-600" />
-              <span>Master data loaded: {new Date(lastFetched).toLocaleString()}</span>
-              <span>•</span>
-              <span>{masterData.length} total records • {filteredData.length} filtered</span>
-            </div>
-          </div>
-        )}
       </div>
     </div>
   );

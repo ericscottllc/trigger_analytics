@@ -74,6 +74,7 @@ export const useAnalyticsData = () => {
     loading: state.loading,
     error: state.error,
     lastFetched: state.lastFetched,
-    fetchMasterData
+    fetchMasterData,
+    totalRecords: state.masterData.length
   };
 };
