@@ -241,9 +241,6 @@ export const PriceTrendReport: React.FC<PriceTrendReportProps> = ({
             </div>
           </div>
         </div>
-            </div>
-          </Card>
-        </div>
       )}
     </div>
   );
