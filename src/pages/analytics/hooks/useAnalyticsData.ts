@@ -1,38 +1,26 @@
 import { useState, useCallback } from 'react';
-import type { AnalyticsFilters, ReportType, GrainEntry } from '../types/analyticsTypes';
+import type { GrainEntry } from '../types/analyticsTypes';
 
 interface AnalyticsDataState {
-  data: Record<ReportType, GrainEntry[]>;
-  loading: Record<ReportType, boolean>;
-  error: Record<ReportType, string | null>;
-  lastFetched: Record<ReportType, string | null>;
+  masterData: GrainEntry[];
+  loading: boolean;
+  error: string | null;
+  lastFetched: string | null;
 }
 
 export const useAnalyticsData = () => {
   const [state, setState] = useState<AnalyticsDataState>({
-    data: {
-      basis_trend: [],
-      price_trend: []
-    },
-    loading: {
-      basis_trend: false,
-      price_trend: false
-    },
-    error: {
-      basis_trend: null,
-      price_trend: null
-    },
-    lastFetched: {
-      basis_trend: null,
-      price_trend: null
-    }
+    masterData: [],
+    loading: false,
+    error: null,
+    lastFetched: null
   });
 
-  const fetchData = useCallback(async (type: ReportType, filters: AnalyticsFilters = {}) => {
+  const fetchMasterData = useCallback(async () => {
     setState(prev => ({
       ...prev,
-      loading: { ...prev.loading, [type]: true },
-      error: { ...prev.error, [type]: null }
+      loading: true,
+      error: null
     }));
 
     try {
@@ -47,8 +35,8 @@ export const useAnalyticsData = () => {
         method: 'POST',
         headers,
         body: JSON.stringify({
-          type,
-          filters
+          type: 'master_data', // Get all data
+          filters: {} // No filters for master query
         })
       });
 
@@ -64,31 +52,28 @@ export const useAnalyticsData = () => {
 
       setState(prev => ({
         ...prev,
-        data: { ...prev.data, [type]: result.data },
-        loading: { ...prev.loading, [type]: false },
-        error: { ...prev.error, [type]: null },
-        lastFetched: { ...prev.lastFetched, [type]: new Date().toISOString() }
+        masterData: result.data,
+        loading: false,
+        error: null,
+        lastFetched: new Date().toISOString()
       }));
 
     } catch (error) {
-      console.error('Error fetching analytics data:', error);
+      console.error('Error fetching master analytics data:', error);
       
       setState(prev => ({
         ...prev,
-        loading: { ...prev.loading, [type]: false },
-        error: { 
-          ...prev.error, 
-          [type]: error instanceof Error ? error.message : 'Failed to fetch analytics data'
-        }
+        loading: false,
+        error: error instanceof Error ? error.message : 'Failed to fetch analytics data'
       }));
     }
   }, []);
 
   return {
-    data: state.data,
+    masterData: state.masterData,
     loading: state.loading,
     error: state.error,
     lastFetched: state.lastFetched,
-    fetchData
+    fetchMasterData
   };
 };

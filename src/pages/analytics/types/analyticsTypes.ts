@@ -11,6 +11,7 @@ export interface GrainEntry {
   notes: string | null;
   crop_name: string | null;
   class_name: string | null;
+  class_code: string | null;
   elevator_name: string;
   town_name: string;
   region_id: string | null;
@@ -18,7 +19,7 @@ export interface GrainEntry {
 }
 
 export interface AnalyticsFilters {
-  crop_class_id?: string;
+  crop_class_code?: string;
   region_id?: string;
   elevator_id?: string;
   town_id?: string;

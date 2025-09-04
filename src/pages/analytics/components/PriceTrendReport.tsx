@@ -3,18 +3,16 @@ import { motion } from 'framer-motion';
 import { DollarSign, TrendingUp, TrendingDown, Minus } from 'lucide-react';
 import { Card } from '../../../components/Shared/SharedComponents';
 import { LineChartComponent } from './charts/LineChartComponent';
-import type { GrainEntry } from '../types/analyticsTypes';
+import type { GrainEntry, AnalyticsFilters } from '../types/analyticsTypes';
 
 interface PriceTrendReportProps {
   data: GrainEntry[];
-  loading: boolean;
-  error: string | null;
+  filters: AnalyticsFilters;
 }
 
 export const PriceTrendReport: React.FC<PriceTrendReportProps> = ({ 
-  data, 
-  loading, 
-  error 
+  data,
+  filters
 }) => {
   const chartData = useMemo(() => {
     if (!data.length) return [];
@@ -84,23 +82,21 @@ export const PriceTrendReport: React.FC<PriceTrendReportProps> = ({
     };
   }, [chartData]);
 
-  if (loading) {
-    return (
-      <div className="max-w-7xl mx-auto p-6">
-        <div className="animate-pulse space-y-6">
-          <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
-            {[...Array(4)].map((_, i) => (
-              <div key={i} className="bg-gray-200 h-24 rounded-xl"></div>
-            ))}
-          </div>
-          <div className="bg-gray-200 h-96 rounded-xl"></div>
-        </div>
-      </div>
-    );
-  }
-
   return (
     <div className="max-w-7xl mx-auto p-6 space-y-6">
+      {/* Filter Summary */}
+      <Card className="p-4 bg-green-50 border-green-200">
+        <h3 className="text-sm font-semibold text-green-800 mb-2">Current Analysis</h3>
+        <p className="text-sm text-green-700">
+          Showing price trends for <strong>{filters.crop_class_code || 'All Crop Classes'}</strong>
+          {filters.region_id && <span> in selected region</span>}
+          {filters.elevator_id && <span> at selected elevator</span>}
+          {filters.town_id && <span> in selected town</span>}
+          {filters.date_from && <span> from {filters.date_from}</span>}
+          {filters.date_to && <span> to {filters.date_to}</span>}
+        </p>
+      </Card>
+
       {/* Statistics Cards */}
       {statistics && (
         <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
