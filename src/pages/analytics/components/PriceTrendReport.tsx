@@ -206,34 +206,23 @@ export const PriceTrendReport: React.FC<PriceTrendReportProps> = ({
       </motion.div>
 
       {/* Data Summary */}
-      <motion.div
-        initial={{ opacity: 0, y: 20 }}
-        animate={{ opacity: 1, y: 0 }}
-        transition={{ delay: 0.6 }}
-      >
-        <Card className="p-6">
-          <h3 className="text-lg font-semibold text-gray-800 mb-4">Data Summary</h3>
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-4 text-sm">
-            <div>
-              <p className="text-gray-600">Total Records</p>
-              <p className="font-semibold text-gray-800">{data.length}</p>
+      {chartData.length > 0 && (
+        <motion.div
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ delay: 0.6 }}
+        >
+          <Card className="p-3">
+            <div className="flex items-center justify-between text-xs text-gray-600">
+              <span>{data.length} records</span>
+              <span>
+                {chartData[0].date} to {chartData[chartData.length - 1].date}
+              </span>
+              <span>{chartData.length} unique dates</span>
             </div>
-            <div>
-              <p className="text-gray-600">Date Range</p>
-              <p className="font-semibold text-gray-800">
-                {chartData.length > 0 ? 
-                  `${chartData[0].date} to ${chartData[chartData.length - 1].date}` : 
-                  'No data'
-                }
-              </p>
-            </div>
-            <div>
-              <p className="text-gray-600">Unique Dates</p>
-              <p className="font-semibold text-gray-800">{chartData.length}</p>
-            </div>
-          </div>
-        </Card>
-      </motion.div>
+          </Card>
+        </motion.div>
+      )}
     </div>
   );
 };
