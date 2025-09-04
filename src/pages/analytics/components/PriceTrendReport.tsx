@@ -207,21 +207,16 @@ export const PriceTrendReport: React.FC<PriceTrendReportProps> = ({
 
       {/* Data Summary */}
       {chartData.length > 0 && (
-        <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ delay: 0.6 }}
-        >
-          <Card className="p-3">
-            <div className="flex items-center justify-between text-xs text-gray-600">
-              <span>{data.length} records</span>
-              <span>
-                {chartData[0].date} to {chartData[chartData.length - 1].date}
-              </span>
-              <span>{chartData.length} unique dates</span>
+        <div className="fixed bottom-4 right-4 z-10">
+          <Card className="p-3 bg-white shadow-lg border border-gray-200">
+            <div className="text-xs text-gray-600 space-y-1">
+              <div>Record count: {data.length}</div>
+              <div>Start Date: {new Date(chartData[0].date).toLocaleDateString('en-US', { month: '2-digit', day: '2-digit', year: '2-digit' })}</div>
+              <div>End Date: {new Date(chartData[chartData.length - 1].date).toLocaleDateString('en-US', { month: '2-digit', day: '2-digit', year: '2-digit' })}</div>
+              <div>Unique Dates: {chartData.length}</div>
             </div>
           </Card>
-        </motion.div>
+        </div>
       )}
     </div>
   );
