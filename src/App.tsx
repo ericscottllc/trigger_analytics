@@ -11,16 +11,17 @@ import { MainContent } from './components/Core/MainContent';
 import { CodeExplorer } from './CodeExplorer';
 import { SchemaExplorer } from './SchemaExplorer';
 import { ReferencesPage } from './pages/references';
+import { AnalyticsPage } from './pages/analytics';
 import { NavigationItem } from './types/navigation';
 
 // Dynamic page component mapping
 // Add new page components here to make them available for navigation
 const PAGE_COMPONENTS: Record<string, React.ComponentType> = {
   'references': ReferencesPage,
+  'analytics': AnalyticsPage,
   // Add more page components here as they are created
   // 'dashboard': DashboardPage,
   // 'grain-entries': GrainEntriesPage,
-  // 'analytics': AnalyticsPage,
 };
 
 // Helper function to normalize navigation item titles to component keys
